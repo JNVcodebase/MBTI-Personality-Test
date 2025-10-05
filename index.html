@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI Personality Type Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option-hover:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="gradient-bg w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-brain text-white text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">MBTI Personality Quiz</h1>
+            <p class="text-gray-600">Discover your unique personality type based on the Myers-Briggs Type Indicator</p>
+        </header>
+
+        <!-- Introduction Section -->
+        <section id="intro-section" class="bg-white rounded-xl card-shadow p-8 mb-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">What is MBTI?</h2>
+                <p class="text-gray-600 mb-6">The Myers-Briggs Type Indicator (MBTI) is a widely used personality assessment tool that categorizes individuals into 16 distinct personality types based on four key preferences:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-blue-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Extraversion vs Introversion</h3>
+                            <p class="text-sm text-gray-600">Where you direct your energy</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-eye text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Sensing vs iNtuition</h3>
+                            <p class="text-sm text-gray-600">How you gather information</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-heart text-yellow-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Thinking vs Feeling</h3>
+                            <p class="text-sm text-gray-600">How you make decisions</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-tasks text-purple-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Judging vs Perceiving</h3>
+                            <p class="text-sm text-gray-600">How you approach life</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="start-quiz" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Start Quiz
+                </button>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz-section" class="hidden bg-white rounded-xl card-shadow p-8 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Personality Questions</h2>
+                <div class="bg-gray-100 px-4 py-2 rounded-full">
+                    <span class="text-gray-700 font-medium">Question <span id="current-question">1</span> of <span id="total-questions">10</span></span>
+                </div>
+            </div>
+            
+            <div id="question-container" class="mb-8">
+                <h3 id="question-text" class="text-xl text-gray-800 mb-6"></h3>
+                <div id="options-container" class="space-y-4"></div>
+            </div>
+            
+            <div class="flex justify-end">
+                <button id="next-button" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed hidden">
+                    Next Question
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="hidden bg-white rounded-xl card-shadow p-8 mb-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Your MBTI Type</h2>
+                <div class="mb-6">
+                    <span id="mbti-type" class="text-5xl font-bold text-indigo-600"></span>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Type Description</h3>
+                    <p id="type-description" class="text-gray-600 leading-relaxed"></p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-800 mb-2">Strengths</h4>
+                        <ul id="strengths-list" class="text-blue-700 space-y-1"></ul>
+                    </div>
+                    <div class="bg-red-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-red-800 mb-2">Potential Weaknesses</h4>
+                        <ul id="weaknesses-list" class="text-red-700 space-y-1"></ul>
+                    </div>
+                </div>
+                
+                <button id="retake-quiz" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-lg transition duration-300 mr-4">
+                    Retake Quiz
+                </button>
+                <button id="share-results" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-8 rounded-lg transition duration-300">
+                    Share Results
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // MBTI Types Data
+        const mbtiData = {
+            ENFP: {
+                description: "The Campaigner - Energetic, enthusiastic, and creative free spirits who can talk their way into or out of anything.",
+                strengths: ["Creative and imaginative", "Enthusiastic", "Excellent communication skills", "Great at improvising", "Open-minded"],
+                weaknesses: ["Dislikes routine and structure", "Overthinks things", "Struggles with follow-through", "Emotionally reactive"]
+            },
+            ENTP: {
+                description: "The Debater - Smart, curious thinkers who aren't afraid to challenge the status quo.",
+                strengths: ["Quick thinker", "Innovative", "Excellent problem solver", "Charismatic", "Confident"],
+                weaknesses: ["Argumentative", "Can overlook details", "Impatient", "Dislikes routine"]
+            },
+            INFP: {
+                description: "The Mediator - Idealistic and compassionate souls who want to make the world a better place.",
+                strengths: ["Idealistic and principled", "Loyal and devoted", "Open-minded", "Compassionate", "Artistic"],
+                weaknesses: ["Too idealistic", "May avoid conflict", "Prone to indecision", "Sensitive to criticism"]
+            },
+            INTP: {
+                description: "The Logician - Innovative thinkers who love exploring abstract concepts and creating logical systems.",
+                strengths: ["Analytical and strategic", "Imaginative", "Objective", "Independent", "Knowledgeable"],
+                weaknesses: ["Can seem aloof", "Overly critical", "Poor practical skills", "Insensitive to others' feelings"]
+            },
+            INFJ: {
+                description: "The Advocate - Quiet, mystical, and inspiring dreamers with a talent for helping others grow.",
+                strengths: ["Insightful", "Inspiring", "Principled", "Determined", "Passionate"],
+                weaknesses: ["Perfectionistic", "Can burn out", "Overly sensitive", "Private and reserved"]
+            },
+            INTJ: {
+                description: "The Architect - Imaginative and strategic thinkers with a plan for everything.",
+                strengths: ["Strategic thinking", "Independent", "Efficient", "Innovative", "Rational"],
+                weaknesses: ["Arrogant", "Dismissive of emotions", "Stubborn", "Intolerant of inefficiency"]
+            },
+            ENFJ: {
+                description: "The Protagonist - Charismatic leaders who inspire others to achieve greatness.",
+                strengths: ["Natural leader", "Empathetic", "Charismatic", "Organized", "Supportive"],
+                weaknesses: ["People-pleasing", "Overly idealistic", "Burnout prone", "Avoids conflict"]
+            },
+            ENTJ: {
+                description: "The Commander - Bold, imaginative, and strong-willed leaders who always find a way to implement their vision.",
+                strengths: ["Strong leadership", "Confident", "Strategic", "Decisive", "Efficient"],
+                weaknesses: ["Stubborn", "Insensitive", "Dominating", "Impatient", "Arrogant"]
+            },
+            ESFP: {
+                description: "The Entertainer - Spontaneous, energetic, and enthusiastic entertainers who live in the moment.",
+                strengths: ["Spontaneous", "Entertaining", "Practical", "Observant", "Outgoing"],
+                weaknesses: ["Dislikes theory and long-term planning", "Easily bored", "Impulsive", "Unfocused"]
+            },
+            ESTP: {
+                description: "The Entrepreneur - Smart, energetic, and very perceptive people who bring a rush of excitement to all things.",
+                strengths: ["Quick thinker", "Practical", "Excellent under pressure", "Direct", "Resourceful"],
+                weaknesses: ["Impulsive", "Insensitive", "Restless", "Dislikes rules and routines"]
+            },
+            ISFP: {
+                description: "The Adventurer - Flexible, charming, and sensitive artists who enjoy living in the present moment.",
+                strengths: ["Flexible", "Charming", "Artistic", "Practical", "Gentle"],
+                weaknesses: ["Avoids conflict", "Dislikes planning", "Overly sensitive", "Prone to boredom"]
+            },
+            ISTP: {
+                description: "The Virtuoso - Bold and practical experimenters who like to understand how the world works.",
+                strengths: ["Practical", "Adaptable", "Excellent problem solver", "Calm under pressure", "Independent"],
+                weaknesses: ["Insensitive", "Risk-taking", "Dislikes commitment", "Can be stubborn"]
+            },
+            ESFJ: {
+                description: "The Consul - Caring, social, and popular people who take pride in ensuring everyone feels comfortable.",
+                strengths: ["Caring", "Social", "Responsible", "Organized", "Practical"],
+                weaknesses: ["Conformist", "Overly helpful", "Dislikes change", "Too focused on approval"]
+            },
+            ESTJ: {
+                description: "The Executive - Excellent administrators who value order and tradition.",
+                strengths: ["Reliable", "Organized", "Efficient", "Practical", "Strong leadership"],
+                weaknesses: ["Stubborn", "Insensitive", "Inflexible", "Dislikes abstract theories"]
+            },
+            ISFJ: {
+                description: "The Defender - Warm, considerate, and gentle protectors who live in the present moment.",
+                strengths: ["Reliable", "Caring", "Organized", "Practical", "Patient"],
+                weaknesses: ["Too modest", "Dislikes change", "Overly self-critical", "Too accommodating"]
+            },
+            ISTJ: {
+                description: "The Logistician - Responsible, sincere, and analytical people who excel at creating order and structure.",
+                strengths: ["Reliable", "Responsible", "Organized", "Practical", "Honest"],
+                weaknesses: ["Stubborn", "Insensitive", "Dislikes change", "Too focused on rules"]
+            }
+        };
+
+        // Quiz Questions
+        const questions = [
+            {
+                question: "After a long week, you recharge best by:",
+                options: [
+                    { text: "Going out with friends or socializing", value: "E" },
+                    { text: "Having quiet time alone or relaxing at home", value: "I" }
+                ]
+            },
+            {
+                question: "When approaching a project, you prefer to:",
+                options: [
+                    { text: "Focus on concrete details and facts", value: "S" },
+                    { text: "Consider possibilities and future implications", value: "N" }
+                ]
+            },
+            {
+                question: "When making decisions, you tend to prioritize:",
+                options: [
+                    { text: "Logic and objective analysis", value: "T" },
+                    { text: "Values and how it affects others", value: "F" }
+                ]
+            },
+            {
+                question: "In your daily life, you generally prefer:",
+                options: [
+                    { text: "Planning and organizing ahead of time", value: "J" },
+                    { text: "Remaining flexible and spontaneous", value: "P" }
+                ]
+            },
+            {
+                question: "When communicating with others, you:",
+                options: [
+                    { text: "Speak directly and concisely", value: "T" },
+                    { text: "Consider others' feelings and express empathy", value: "F" }
+                ]
+            },
+            {
+                question: "When faced with a new situation, you:",
+                options: [
+                    { text: "Trust established methods and procedures", value: "S" },
+                    { text: "Explore new approaches and possibilities", value: "N" }
+                ]
+            },
+            {
+                question: "At social gatherings, you:",
+                options: [
+                    { text: "Feel energized by interacting with many people", value: "E" },
+                    { text: "Find large groups draining and prefer smaller interactions", value: "I" }
+                ]
+            },
+            {
+                question: "When completing tasks, you:",
+                options: [
+                    { text: "Like to finish one task before starting another", value: "J" },
+                    { text: "Are comfortable leaving tasks open-ended until completion", value: "P" }
+                ]
+            },
+            {
+                question: "When solving problems, you:",
+                options: [
+                    { text: "Look for logical patterns and principles", value: "T" },
+                    { text: "Consider how solutions affect people and relationships", value: "F" }
+                ]
+            },
+            {
+                question: "In your spare time, you'd rather:",
+                options: [
+                    { text: "Engage in activities that involve interaction with others", value: "E" },
+                    { text: "Enjoy solitary activities that allow for reflection", value: "I" }
+                ]
+            }
+        ];
+
+        // Quiz State
+        let currentQuestionIndex = 0;
+        let scores = {
+            E: 0, I: 0,
+            S: 0, N: 0,
+            T: 0, F: 0,
+            J: 0, P: 0
+        };
+        let selectedOption = null;
+
+        // DOM Elements
+        const introSection = document.getElementById('intro-section');
+        const quizSection = document.getElementById('quiz-section');
+        const resultsSection = document.getElementById('results-section');
+        const startQuizBtn = document.getElementById('start-quiz');
+        const nextButton = document.getElementById('next-button');
+        const retakeQuizBtn = document.getElementById('retake-quiz');
+        const shareResultsBtn = document.getElementById('share-results');
+
+        // Event Listeners
+        startQuizBtn.addEventListener('click', startQuiz);
+        nextButton.addEventListener('click', nextQuestion);
+        retakeQuizBtn.addEventListener('click', resetQuiz);
+        shareResultsBtn.addEventListener('click', shareResults);
+
+        function startQuiz() {
+            introSection.classList.add('hidden');
+            quizSection.classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option-hover bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer transition-all';
+                optionElement.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-indigo-600 font-medium">${String.fromCharCode(65 + index)}</span>
+                        </div>
+                        <span class="text-gray-800">${option.text}</span>
+                    </div>
+                `;
+                
+                optionElement.addEventListener('click', () => selectOption(option.value));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            nextButton.classList.add('hidden');
+            selectedOption = null;
+        }
+
+        function selectOption(value) {
+            selectedOption = value;
+            
+            // Update UI to show selection
+            const options = document.querySelectorAll('.option-hover');
+            options.forEach((option, index) => {
+                const optionValue = questions[currentQuestionIndex].options[index].value;
+                if (optionValue === value) {
+                    option.classList.add('border-indigo-500', 'bg-indigo-50');
+                } else {
+                    option.classList.remove('border-indigo-500', 'bg-indigo-50');
+                }
+            });
+            
+           nextButton.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            if (!selectedOption) return;
+            
+            // Update scores
+            scores[selectedOption]++;
+            
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            
+            // Determine MBTI type
+            const mbtiType = `${scores.E > scores.I ? 'E' : 'I'}${scores.S > scores.N ? 'S' : 'N'}${scores.T > scores.F ? 'T' : 'F'}${scores.J > scores.P ? 'J' : 'P'}`;
+            
+            document.getElementById('mbti-type').textContent = mbtiType;
+            
+            const typeData = mbtiData[mbtiType];
+            document.getElementById('type-description').textContent = typeData.description;
+            
+            // Populate strengths and weaknesses
+            const strengthsList = document.getElementById('strengths-list');
+            strengthsList.innerHTML = typeData.strengths.map(strength => `<li>${strength}</li>`).join('');
+            
+            const weaknessesList = document.getElementById('weaknesses-list');
+            weaknessesList.innerHTML = typeData.weaknesses.map(weakness => `<li>${weakness}</li>`).join('');
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            selectedOption = null;
+            
+            resultsSection.classList.add('hidden');
+            introSection.classList.remove('hidden');
+        }
+
+        function shareResults() {
+            const mbtiType = document.getElementById('mbti-type').textContent;
+            const shareText = `I just discovered my MBTI personality type is ${mbtiType}! Take the quiz yourself to find out yours:`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My MBTI Personality Type',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                alert(`Copy this link to share:\n\n${shareText}\n${window.location.href}`);
+            }
+        }
+    </script>
+</body>
+</html>
